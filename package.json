@@ -1,8 +1,8 @@
 {
   "name": "opendata",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "git@github.com:pycabbage/opendata.git",
+  "private": true,
   "author": "Cabbage Lettuce <33714346+pycabbage@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {

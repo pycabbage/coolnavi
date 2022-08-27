@@ -3,5 +3,5 @@ import './style.css'
 import App from './App.vue'
 
 new Vue({
-  el: App
+  render: h => h(App)
 }).$mount('#app');
