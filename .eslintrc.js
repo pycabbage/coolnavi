@@ -13,6 +13,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     "new-cap": "off",
-    "no-undef": "off"
+    "no-console": "off",
+    "no-undef": "off",
   },
 }

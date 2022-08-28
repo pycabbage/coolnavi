@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "jsx": "preserve",
+    "resolveJsonModule": true,
     "baseUrl": ".",
+    "target": "es6",
+    "checkJs": true,
+    "moduleResolution": "node",
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./*"],
