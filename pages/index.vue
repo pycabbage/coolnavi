@@ -1,9 +1,9 @@
 <template>
   <div justify="center">
     <v-row align-content="center">
-      <v-col align="center">
-        <h2>声で質問する</h2>
-        <v-btn @click="gen" x-large class="mx-2" fab color="blue">
+      <v-col align="center" >
+        <h2 class="mt-10" >声で質問する</h2>
+        <v-btn @click="gen" x-large class="mx-2 my-5" fab color="blue">
           <v-icon>mdi-account-circle</v-icon>
         </v-btn>
         <h2>{{ this.msg }}</h2>
@@ -120,10 +120,10 @@ export default {
              * 目的地までの所要時間
              */
             const reqTime = await this.getRequiredTime(
-              // curLoc.lat,
-              // curLoc.long,
-              toshoPos.lat,
-              toshoPos.lon,
+              curLoc.lat,
+              curLoc.long,
+              // toshoPos.lat,
+              // toshoPos.lon,
               toshoPos.lat,
               toshoPos.lon
             )

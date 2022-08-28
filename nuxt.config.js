@@ -35,6 +35,8 @@ export default {
     // '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    // https://color-mode.nuxtjs.org/
+    '@nuxtjs/color-mode'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -47,6 +49,17 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+  },
+
+  colorMode: {
+    preference: 'system', // default value of $colorMode.preference
+    fallback: 'light', // fallback value if not system preference found
+    hid: 'nuxt-color-mode-script',
+    globalName: '__NUXT_COLOR_MODE__',
+    // componentName: 'ColorScheme',
+    // classPrefix: '',
+    // classSuffix: '-mode',
+    storageKey: 'nuxt-color-mode'
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
