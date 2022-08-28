@@ -1,87 +1,93 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation </a
-            >.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord </a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <div>
+    <h2>声で質問する</h2>
+    <v-btn @click="gen">
+      <v-icon>mdi-account-circle</v-icon>
+    </v-btn>
+    <h2>現在地を取得</h2>
+    <v-btn @click="getCurrentLocation">GET</v-btn>
+    <h2>気温を取得</h2>
+    <v-btn @click="temp">GET</v-btn>
+  </div>
 </template>
 
 <script>
+import Kuroshiro from 'kuroshiro'
+
 export default {
   name: 'IndexPage',
+  methods: {
+    gen() {
+      console.log('ok')
+      const analyzer = new KuromojiAnalyzer()
+      const kuroshiro = new Kuroshiro(analyzer)
+      const recognition = new webkitSpeechRecognition()
+      recognition.onresult = async (event) => {
+        /** @type {string} */
+        const recText = event.results[0][0].transcript
+        await kuroshiro.convert(recText)
+      }
+      recognition.start()
+    },
+    getCurrentLocation() {
+      const options = {
+        enableHightAccuracy: false,
+        timeOut: 5000,
+        maximumAge: 0,
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        this.success,
+        this.error,
+        options
+      )
+    },
+    success(position) {
+      const pos = {
+        lat: position.coords.latitude,
+        long: position.coords.longitude,
+      }
+
+      console.log(pos)
+    },
+    error(error) {
+      console.log(`ERROR(${error.code}):${error.message}`)
+    },
+    getLocationFromBuildingName(BuildingName) {},
+    temp() {
+      const latitude = 35.4648142
+      const longitude = 139.5585634
+      const API_KEY = "dc31582af77b77e4e9bea929b3c6b8bf"
+      const url =
+        'https://api.openweathermap.org/data/2.5/forecast?lat=' +
+        latitude +
+        '&lon=' +
+        longitude +
+        '&units=metric&appid=' +
+        API_KEY
+
+      fetch(url)
+        .then((data) => {
+          return data.json()
+        })
+        .then((json) => {
+          console.log(json.list[0])
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    getRequiredTime() {
+      const lat = 35.4648142;
+      const lng = 139.5585634;
+      const API_KEY = "AIzaSyA_zlu8mk7oIDv5Vt7QFNyrhv0FSxCuaZM";
+      const options = {
+        lat:
+      }
+      const distanceMatrixService = new google.maps.DistanceMatrixService();
+
+      distanceMatrixService.getDistanceMatrix()
+    }
+  },
 }
 </script>
