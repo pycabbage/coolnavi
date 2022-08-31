@@ -12,8 +12,14 @@ module.exports = {
   plugins: [],
   // add your custom rules here
   rules: {
-    "new-cap": "off",
-    "no-console": "off",
-    "no-undef": "off",
+    'new-cap': 'off',
+    'no-console': 'off',
+    'no-undef': 'off',
+    'vue/no-unused-vars': [
+      'error',
+      {
+        ignorePattern: '^_',
+      },
+    ],
   },
 }

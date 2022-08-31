@@ -24,7 +24,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: 'plugins/vue2-google-maps.js' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -36,7 +36,7 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     // https://color-mode.nuxtjs.org/
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -59,7 +59,7 @@ export default {
     // componentName: 'ColorScheme',
     // classPrefix: '',
     // classSuffix: '-mode',
-    storageKey: 'nuxt-color-mode'
+    storageKey: 'nuxt-color-mode',
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -82,6 +82,9 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
-  serverMiddleware: ["~~/api/"],
+  build: {
+    vendor: ['vue2-google-maps'],
+    transpile: [/^vue2-google-maps($|\/)/],
+  },
+  serverMiddleware: ['~~/api/'],
 }

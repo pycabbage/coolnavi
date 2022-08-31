@@ -3,10 +3,10 @@
     <v-row align-content="center">
       <v-col align="center" >
         <h2 class="mt-10" >声で質問する</h2>
-        <v-btn @click="gen" x-large class="mx-2 my-5" fab color="blue">
+        <v-btn x-large class="mx-2 my-5" fab color="blue" @click="gen">
           <v-icon>mdi-account-circle</v-icon>
         </v-btn>
-        <h2>{{ this.msg }}</h2>
+        <h2>{{ msg }}</h2>
         <v-btn @click="move">近くのクールシェアスポットを探す</v-btn>
       </v-col>
     </v-row>
@@ -54,6 +54,7 @@ import Recomend from './recomend.vue'
 
 export default {
   name: 'IndexPage',
+  components: { Recomend },
   data() {
     return {
       msg: '',
@@ -61,7 +62,7 @@ export default {
   },
   methods: {
     move() {
-      //@ts-ignore
+      // @ts-ignore
       this.$router.push('/recomend')
     },
     gen() {
@@ -279,6 +280,5 @@ export default {
       }
     },
   },
-  components: { Recomend },
 }
 </script>

@@ -7,7 +7,7 @@
   -->
   <v-card class="mx-auto" max-width="300" tile>
     <v-list dense>
-      <v-subheader>{{ this.nearDistance }}km圏内の図書館</v-subheader>
+      <v-subheader>{{ nearDistance }}km圏内の図書館</v-subheader>
       <v-list-item-group color="primary">
         <v-list-item
           v-for="(item, i) in items"
@@ -32,7 +32,17 @@
 import tosyo from './output.json'
 
 export default {
-  mounted: async function () {
+  data() {
+    return {
+      items: [
+        // { icon: 'mdi-domain', text: '○○図書館' },
+        // { icon: 'mdi-domain', text: '××美術館' },
+        // { icon: 'mdi-domain', text: '△△図書館' },
+      ],
+      nearDistance: 2,
+    }
+  },
+  async mounted () {
     // @ts-ignore
     const fTosho = await this.getNearLib()
     this.items = fTosho.map((d) => {
@@ -45,16 +55,6 @@ export default {
         )}`,
       }
     })
-  },
-  data() {
-    return {
-      items: [
-        // { icon: 'mdi-domain', text: '○○図書館' },
-        // { icon: 'mdi-domain', text: '××美術館' },
-        // { icon: 'mdi-domain', text: '△△図書館' },
-      ],
-      nearDistance: 2,
-    }
   },
   methods: {
     /**
@@ -125,9 +125,7 @@ export default {
               distance: dis,
               distanceText: `${dis.toFixed(2)}km`,
             }
-          } else {
-            return
-          }
+          } else {}
         })
         .filter((v) => v)
       return fTosho
