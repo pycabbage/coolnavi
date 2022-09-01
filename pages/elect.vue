@@ -1,6 +1,20 @@
 <template>
-  <div>
-    
+  <div style="margin-top: 50px">
+    <div style="text-align: center; margin-left: auto; margin-right: auto">
+      <h4>今月削減した電力消費量は、</h4>
+      <h3>{{ elect.elect }} kWh</h3>
+    </div>
+    <div style="text-align: center; margin-left: auto; margin-right: auto">
+      <h4>累計クールシェア時間は、</h4>
+      <h3>{{ elect.time / 60 }} 時間</h3>
+    </div>
+    <div style="text-align: center; margin-left: auto; margin-right: auto">
+      <h4>節約した電気代は、</h4>
+      <h3>{{ elect.money }} 円</h3>
+    </div>
+    <div style="text-align: center; margin-left: auto; margin-right: auto">
+      <h4>です。</h4>
+    </div>
   </div>
 </template>
 
@@ -10,14 +24,22 @@ export default {
   data() {
     return {
       elect: {
-        time: 0,
+        time: 37264, // 単位:分
         elect: 0,
         money: 0,
       },
     }
   },
-  async mounted() {},
+  // eslint-disable-next-line require-await
+  async mounted() {
+    this.updateByTime()
+  },
   methods: {
+    updateByTime() {
+      const { elect, money } = this.getElectBillSaved(this.elect.time)
+      this.elect.elect = elect
+      this.elect.money = money
+    },
     /**
      * @param {string} e
      */
