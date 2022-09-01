@@ -1,162 +1,203 @@
 <template>
-  <div justify="center">
-    <v-row align-content="center">
-      <v-col align="center" >
-        <h2 class="mt-10" >声で質問する</h2>
-        <v-btn x-large class="mx-2 my-5" fab color="blue" @click="gen">
-          <v-icon>mdi-account-circle</v-icon>
+  <div style="width: 100vw; height: 100%">
+    <gmap-map
+      ref="mapRef"
+      :center="{ lat: curLoc.lat, lng: curLoc.lng }"
+      :zoom="15"
+      map-type-id="terrain"
+      style="width: 100vw; height: 100%"
+      :options="{ streetViewControl: false }"
+    >
+      <gmap-marker
+        key="curLoc"
+        ref="myCurMarker"
+        :position="curLoc"
+        color="#0000AA"
+      />
+      <gmap-marker
+        v-for="(m, index) in spots"
+        ref="myMarker"
+        :key="index"
+        :position="m.position"
+        :clickable="true"
+        @click="toggleInfoWindow(m, index)"
+      />
+
+      <gmap-info-window
+        key="m.text"
+        :options="infoOptions"
+        :position="infoWindowPos"
+        :opened="infoWinOpen"
+        @closeclick="infoWinOpen = false"
+      >
+        <h3>{{ infoWinText }}</h3>
+      </gmap-info-window>
+    </gmap-map>
+    <v-dialog v-model="showDialog" width="100%">
+      <v-toolbar dark>
+        <v-btn icon dark @click="showDialog = false">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
-        <h2>{{ msg }}</h2>
-        <v-btn @click="move">近くのクールシェアスポットを探す</v-btn>
-      </v-col>
-    </v-row>
-    <!-- <Recomend></Recomend> -->
+        <v-toolbar-title>{{ '図書館の詳細' }}</v-toolbar-title>
+      </v-toolbar>
+      <v-card>
+        <v-card-title class="text-h5">
+          {{ infoWinText }}
+        </v-card-title>
+        <v-card-subtitle>{{ infoWinTextDistance }}</v-card-subtitle>
+        <v-card-actions>
+          <v-btn text @click.stop="goto()"> Go here </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import kuromoji from 'kuromoji'
-import tosyo from './output.json'
 // @ts-ignore
-import Recomend from './recomend.vue'
+import { gmapApi } from 'vue2-google-maps'
+import tosyo from './output.json'
 
-/**
- * @typedef {{
- *  "区市町村名": string,
- *  "施設区分": string,
- *  "施設名"
- *  "所在地": string,
- *  "緯度": string,
- *  "経度": string,
- *  "座標系": string,
- *  "電話番号": string,
- *  "備考": string,
- * }} ToshokanDict
- */
+// eslint-disable-next-line require-await
+const sleep = async function (/** @type {number} */ msec) {
+  return new Promise((resolve, reject) => setTimeout(resolve, msec))
+}
 
-/**
- * @typedef {{
- *   dt: number,
- *   main: {
- *     temp: number,
- *     feels_like: number,
- *     temp_min: number,
- *     temp_max: number,
- *     pressure: number,
- *     sea_level: number,
- *     grnd_level: number,
- *     humidity: number,
- *     temp_kf: number,
- *   },
- *   weather: any
- * }} TempReturn
- */
-
+// @ts-ignore
 export default {
   name: 'IndexPage',
-  components: { Recomend },
+  /**
+   * @return {{
+   *  going: boolean,
+   *  showDialog: boolean,
+   *  curLoc: {
+   *    lat: number,
+   *    lng: number,
+   *  },
+   *  nearDistance: number,
+   *  infoOptions: any,
+   *  infoWindowPos: any,
+   *  infoWinOpen: boolean,
+   *  infoWinText: string,
+   *  infoWinTextDistance: string,
+   *  spots: {
+   *   position: {
+   *     lat: number,
+   *     lng: number,
+   *   },
+   *   text: string,
+   *  }[]
+   * }}
+   */
   data() {
     return {
-      msg: '',
+      going: false,
+      showDialog: false,
+      infoOptions: {
+        pixelOffset: {
+          width: 0,
+          height: -35,
+        },
+      },
+      infoWindowPos: null,
+      infoWinOpen: false,
+      infoWinText: 'LIBRARY',
+      infoWinTextDistance: '100km',
+      nearDistance: 3,
+      curLoc: {
+        lat: 0,
+        lng: 0,
+      },
+      spots: [],
     }
   },
-  methods: {
-    move() {
+  computed: {
+    google: gmapApi,
+  },
+  async mounted() {
+    /**
+     * 現在位置
+     * @type {{
+     *   lat: number,
+     *   lng: number,
+     * }}
+     */
+    console.log('getting current location')
+    this.curLoc = await this.getCurrentLocation()
+    let map
+    while (true) {
+      await sleep(300)
       // @ts-ignore
-      this.$router.push('/recomend')
-    },
-    gen() {
-      // const DICT_PATH = "./dict";
-      console.log('ok')
-      // @ts-ignore
-      const recognition = new webkitSpeechRecognition()
-      recognition.onresult = (event) => {
-        console.log('ninshiki')
-        /** @type {string} */
-        const recText = event.results[0][0].transcript
-        // const recText = '目黒図書館で3時間本を読みます。'
-        kuromoji
-          .builder({
-            dicPath: './dict',
-          })
-          .build(async (__err, tokenizer) => {
-            const token = tokenizer.tokenize(recText.trim())
-            console.table(token)
-            // 所要時間を取得
-            const jMap = token.map((t) =>
-              [t.pos_detail_1, t.pos_detail_2, t.pos_detail_3].includes(
-                '助数詞'
-              )
-            )
-            const nMap = token
-              .slice(jMap.indexOf(true) - 1, jMap.indexOf(true) + 1)
-              .map((d) => d.surface_form)
-            console.log('所要時間:', nMap)
-            let byou = parseInt(nMap[0])
-            if (nMap[1].startsWith('分')) byou *= 60
-            if (nMap[1].startsWith('時間')) byou *= 60 * 60
-            if (nMap[1].startsWith('日')) byou *= 60 * 60 * 24
-            console.log('秒数:', byou)
-            // 図書館名を取得
-            const fToken = token.filter((t) => t.pos === '名詞')
-            const matchArray = ['図書館', '美術館']
-            const indexOfMatched = fToken
-              .map((d) => matchArray.includes(d.surface_form))
-              .indexOf(true)
-            const matchedArray = fToken.slice(
-              indexOfMatched - 1,
-              indexOfMatched + 1
-            )
-            /**
-             * 施設名
-             */
-            const matched = matchedArray.map((d) => d.surface_form).join('')
-            console.log(matched)
-            const toshoPos = this.getTosyoLocation(matched)
-            /**
-             * 現在地
-             */
-            const curLoc = await this.getCurrentLocation()
-            /**
-             * 目的地までの所要時間
-             */
-            const reqTime = await this.getRequiredTime(
-              curLoc.lat,
-              curLoc.long,
-              // toshoPos.lat,
-              // toshoPos.lon,
-              toshoPos.lat,
-              toshoPos.lon
-            )
-            /**
-             * 現在地の気温
-             */
-            const curTemp = (await this.temp(curLoc.lat, curLoc.long)).main.temp
-            /**
-             * 外出時間
-             */
-            const shoyou = reqTime.value * 2 + byou
-            console.log('片道', reqTime.value, '秒')
-            console.log('所要時間:', shoyou, '秒')
-            console.log('現在地の気温:', curTemp)
-
-            // エアコンの判定
-            let hantei = ''
-            if (curTemp <= 35 && shoyou >= 1800) {
-              hantei = '消したほうが良いかもしれません'
-            } else {
-              hantei = 'つけたほうが良いかもしれません'
-            }
-            this.msg = hantei
-            // document.body.innerText
-          })
+      if (this.$refs.mapRef) map = await this.$refs.mapRef.$mapPromise
+      if (map) break
+      console.log('waiting map')
+    }
+    console.log('this.$refs.mapRef : ', map)
+    await map.panTo({ lat: this.curLoc.lat, lng: this.curLoc.lng })
+    const fTosho = this.getNearLib(this.curLoc)
+    this.spots = fTosho.map((d) => {
+      return {
+        icon: 'mdi-domain',
+        text: d.tosho['施設名'],
+        distance: d.distanceText,
+        link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+          d.tosho['施設名']
+        )}`,
+        position: {
+          lat: parseFloat(d.tosho['緯度']),
+          lng: parseFloat(d.tosho['経度']),
+        },
+        lat: parseFloat(d.tosho['緯度']),
+        lng: parseFloat(d.tosho['経度']),
       }
-      recognition.start()
+    })
+    console.log('this.spots', this.spots)
+  },
+  methods: {
+    goto() {
+      this.showDialog = false
+      console.log('GO!')
+    },
+    toggleInfoWindow(marker, index) {
+      console.log('toggleInfoWindow', marker, index)
+      this.infoWindowPos = marker.position
+      // this.infoWinOpen = true
+      this.showDialog = true
+      this.infoWinText = `${marker.text}`
+      this.infoWinTextDistance = `${marker.distance}`
     },
     /**
+     * 緯度経度から距離を算出
+     * @param {number} lat1 緯度1
+     * @param {number} lng1 経度1
+     * @param {number} lat2 緯度2
+     * @param {number} lng2 経度2
+     * @return {number} 直線距離[km]
+     * @link {https://keisan.casio.jp/exec/system/1257670779}
+     */
+    getDistanceByLatLong(lat1, lng1, lat2, lng2) {
+      /**
+       * 地球の赤道半径 [km]
+       */
+      const r = 6378.137
+      lat1 *= Math.PI / 180
+      lng1 *= Math.PI / 180
+      lat2 *= Math.PI / 180
+      lng2 *= Math.PI / 180
+      const d =
+        r *
+        Math.acos(
+          Math.sin(lat1) * Math.sin(lat2) +
+            Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1)
+        )
+      return d
+    },
+
+    /**
+     * 現在地を取得
      * @return {Promise<{
      *   lat: number,
-     *   long: number,
+     *   lng: number,
      * }>}
      */
     getCurrentLocation() {
@@ -170,7 +211,7 @@ export default {
           (position) => {
             resolve({
               lat: position.coords.latitude,
-              long: position.coords.longitude,
+              lng: position.coords.longitude,
             })
           },
           reject,
@@ -178,106 +219,31 @@ export default {
         )
       })
     },
-    success(position) {
-      const pos = {
-        lat: position.coords.latitude,
-        long: position.coords.longitude,
-      }
-      console.log(pos)
-      return pos
-    },
-    error(error) {
-      console.log(`ERROR(${error.code}):${error.message}`)
-    },
-    _temp() {
-      this.temp()
-    },
+
     /**
-     * 気温を取得
-     * @param {number} latitude
-     * @param {number} longitude
-     * @return {Promise<TempReturn>}
+     * 近くの図書館を取得
+     * @param {{ lat: number; lng: number; }} curLoc
      */
-    temp(latitude = 35.4648142, longitude = 139.5585634) {
-      // const _latitude = 35.4648142
-      // const _longitude = 139.5585634
-      const API_KEY = 'dc31582af77b77e4e9bea929b3c6b8bf'
-      const url =
-        'https://api.openweathermap.org/data/2.5/forecast?lat=' +
-        latitude +
-        '&lon=' +
-        longitude +
-        '&units=metric&appid=' +
-        API_KEY
-      console.log(url)
-      return fetch(url)
-        .then((data) => {
-          return data.json()
-        })
-        .then((json) => {
-          console.log(json.list[0])
-          // @ts-ignore
-          window.temp = JSON.stringify(json)
-          return json.list[0]
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    },
-    /**
-     * @param {string|number} lat
-     * @param {string|number} lng
-     * @param {string|number} lat2
-     * @param {string|number} lng2
-     * @return {Promise<{
-     *   value: number,
-     *   text: string
-     * }>}
-     */
-    getRequiredTime(lat, lng, lat2, lng2) {
-      // const lat = 35.4648142
-      // const lng = 139.5585634
-      // const lat2 = 35.5648142
-      // const lng2 = 139.5585634
-      const API_KEY = 'AIzaSyA_zlu8mk7oIDv5Vt7QFNyrhv0FSxCuaZM'
-      const url = `/api?lat1=${lat}&lng1=${lng}&lat2=${lat2}&lng2=${lng2}`
-      return fetch(url)
-        .then((data) => {
-          return data.json()
-        })
-        .then((json) => {
-          console.log(json[0].duration.text)
-          console.log('value:', json[0].duration.value)
-          return {
-            value: json[0].duration.value,
-            text: json[0].duration.text,
+    getNearLib(curLoc) {
+      const fTosho = tosyo
+        // eslint-disable-next-line array-callback-return
+        .map((d) => {
+          const dis = this.getDistanceByLatLong(
+            curLoc.lat,
+            curLoc.lng,
+            parseFloat(d['緯度']),
+            parseFloat(d['経度'])
+          )
+          if (dis <= this.nearDistance) {
+            return {
+              tosho: d,
+              distance: dis,
+              distanceText: `${dis.toFixed(2)}km`,
+            }
           }
         })
-      // .catch((error) => {
-      //   console.error(error)
-      // })
-    },
-    /**
-     * @param {string} name
-     * @return {{
-     *   lat: string,
-     *   lon: string
-     * }}
-     */
-    getTosyoLocation(name) {
-      // const name = '昌平まちかど図書館'
-      const newTosyo = tosyo.find((t) => {
-        return t.施設名 === name
-      })
-      const lat = newTosyo.緯度
-      const lon = newTosyo.経度
-      console.log('図書館名', newTosyo)
-      console.log('緯度', lat)
-      console.log('経度', lon)
-      return {
-        lat,
-        lon,
-      }
+        .filter((v) => v)
+      return fTosho
     },
   },
 }

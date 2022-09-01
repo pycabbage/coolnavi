@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "vuetify"],
     "jsx": "preserve",
     "resolveJsonModule": true,
     "baseUrl": ".",
