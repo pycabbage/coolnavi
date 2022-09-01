@@ -45,8 +45,9 @@
           {{ infoWinText }}
         </v-card-title>
         <v-card-subtitle>{{ infoWinTextDistance }}</v-card-subtitle>
+        <v-card-text v-if="going">{{ wentTimeText }}</v-card-text>
         <v-card-actions>
-          <v-btn text @click.stop="goto()"> Go here </v-btn>
+          <v-btn text @click.stop="goto()"> {{ goText }} </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -69,6 +70,9 @@ export default {
   /**
    * @return {{
    *  going: boolean,
+   *  wentTime: Date,
+   *  wentTimeText: string,
+   *  goText: string,
    *  showDialog: boolean,
    *  curLoc: {
    *    lat: number,
@@ -92,6 +96,9 @@ export default {
   data() {
     return {
       going: false,
+      wentTime: new Date(),
+      wentTimeText: '',
+      goText: '行く',
       showDialog: false,
       infoOptions: {
         pixelOffset: {
@@ -156,7 +163,18 @@ export default {
   methods: {
     goto() {
       this.showDialog = false
+      this.wentTime = new Date()
+      if (this.going) {
+        return this.comeback()
+      }
+      this.going = true
       console.log('GO!')
+      this.goText = `${this.infoWinText}から帰宅した`
+    },
+    comeback() {
+      console.log('comeback!')
+      this.going = false
+      this.goText = '行く'
     },
     toggleInfoWindow(marker, index) {
       console.log('toggleInfoWindow', marker, index)
@@ -164,6 +182,10 @@ export default {
       // this.infoWinOpen = true
       this.showDialog = true
       this.infoWinText = `${marker.text}`
+      this.wentTimeText = `${
+        // @ts-ignore
+        (1.32+(new Date() - this.wentTime) / 1000 / 3600).toFixed(2)
+      }時間経過`
       this.infoWinTextDistance = `${marker.distance}`
     },
     /**

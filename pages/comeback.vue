@@ -1,6 +1,6 @@
 <template>
   <div>
-    
+    <v-btn>帰ってきた</v-btn>
   </div>
 </template>
 

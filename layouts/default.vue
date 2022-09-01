@@ -47,7 +47,7 @@ export default {
         {
           icon: 'mdi-chart-bubble',
           title: '電力削減量',
-          to: '/inspire',
+          to: '/elect',
         },
       ],
       title: 'クールシェア アプリ',
