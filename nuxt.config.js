@@ -6,10 +6,10 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - opendata',
-    title: 'opendata',
+    titleTemplate: '%s - クールナビ',
+    title: 'クールナビ',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'ja',
     },
     meta: [
       { charset: 'utf-8' },
@@ -43,6 +43,10 @@ export default {
     '@nuxtjs/color-mode',
   ],
   pwa: {
+    meta: {
+      name: 'クールナビ',
+      lang: 'ja',
+    },
     manifest: {
       name: 'クールナビ',
       lang: 'ja',
