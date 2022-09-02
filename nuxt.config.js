@@ -55,6 +55,13 @@ export default {
     '@nuxtjs/color-mode',
   ],
 
+  sitemap: {
+    hostname: 'https://coolnavi.vercel.app/',
+    gzip: true
+  },
+
+  robots: {},
+
   pwa: {
     icon: {},
     meta: {
