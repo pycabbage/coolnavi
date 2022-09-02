@@ -1,28 +1,21 @@
 <template>
-  <div>
-    <v-card class="d-flex flex-column pa-6 ma-2" flat>
-      <p class="mx-lg-auto mb-auto text-h6">今月削減した電力消費量は、</p>
-      <p class="mx-lg-auto mb-auto text-h4">{{ elect.elect }} kWh</p>
-      <p class="mx-lg-auto mb-auto text-h6">累計クールシェア時間は、</p>
-      <p class="mx-lg-auto mb-auto text-h4">
-        {{ (elect.time / 60).toFixed(2) }} 時間
-      </p>
-      <p class="mx-lg-auto mb-auto text-h6">節約した電気代は、</p>
-      <p class="mx-lg-auto mb-auto text-h4">{{ elect.money.toFixed() }} 円</p>
-      <p class="mx-lg-auto mb-auto text-h6">です。</p>
-      <elect-graphic class="mx-lg-auto mb-auto" :elect="electG" />
-    </v-card>
-  </div>
+  <v-card class="d-flex flex-column pa-6 ma-2" flat>
+    <p class="mx-lg-auto mb-auto text-h6">今月削減した電力消費量は、</p>
+    <p class="mx-lg-auto mb-auto text-h4">{{ elect.elect }} kWh</p>
+    <p class="mx-lg-auto mb-auto text-h6">累計クールシェア時間は、</p>
+    <p class="mx-lg-auto mb-auto text-h4">
+      {{ (elect.time / 60).toFixed(2) }} 時間
+    </p>
+    <p class="mx-lg-auto mb-auto text-h6">節約した電気代は、</p>
+    <p class="mx-lg-auto mb-auto text-h4">{{ elect.money.toFixed() }} 円</p>
+    <p class="mx-lg-auto mb-auto text-h6">です。</p>
+    <elect-graphic class="mx-lg-auto mb-auto" :elect="electG" />
+  </v-card>
 </template>
 
 <script>
-import ElectGraphic from '~/components/ElectGraphic.vue'
-
 export default {
   name: 'ElectPage',
-  components: {
-    ElectGraphic,
-  },
   data() {
     return {
       electG: 0.6,

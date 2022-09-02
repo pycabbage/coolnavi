@@ -1,33 +1,40 @@
 <template>
-  <v-app dark>
-    <v-app-bar :clipped-left="clipped" fixed app>
-      <v-app-bar-nav-icon aria-label="メニュー" @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
-    </v-app-bar>
-    <v-navigation-drawer v-model="drawer" absolute temporary app>
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
+  <v-theme-provider dark>
+    <v-app dark>
+      <v-app-bar :clipped-left="clipped" fixed app>
+        <v-app-bar-nav-icon
+          aria-label="メニュー"
+          @click.stop="drawer = !drawer"
+        />
+        <v-toolbar-title v-text="title" />
+      </v-app-bar>
+      <v-navigation-drawer v-model="drawer" absolute temporary app>
+        <v-list>
+          <v-list-item
+            v-for="(item, i) in items"
+            :key="i"
+            :to="item.to"
+            router
+            exact
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <v-main>
+        <v-container
+          style="padding: 0 0 0 0; margin: 0 0 0 0; width: 100%; height: 100%"
         >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-main>
-      <v-container style="padding: 0 0 0 0; margin: 0 0 0 0; width: 100%; height: 100%">
-        <Nuxt />
-      </v-container>
-    </v-main>
-  </v-app>
+          <Nuxt />
+        </v-container>
+      </v-main>
+    </v-app>
+  </v-theme-provider>
 </template>
 
 <script>
@@ -50,8 +57,13 @@ export default {
           to: '/elect',
         },
       ],
-      title: 'クールシェア アプリ',
+      title: 'クールナビ',
     }
+  },
+  mounted() {
+    // @ts-ignore
+    // console.log('$vuetify.theme.dark', $vuetify.theme.dark)
+    // console.log('$colorMode.preference', this.$colorMode.preference)
   },
 }
 </script>

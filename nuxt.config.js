@@ -1,6 +1,10 @@
 import colors from 'vuetify/es5/util/colors'
 
-export default {
+// const domain = 'http://localhost:3000/'
+const domain = 'https://coolnavi.vercel.app/'
+
+/** @type { import("@nuxt/types").NuxtConfig } */
+const config = {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'server',
 
@@ -53,17 +57,15 @@ export default {
     '@nuxtjs/onesignal',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    // https://color-mode.nuxtjs.org/
-    '@nuxtjs/color-mode',
   ],
 
   sitemap: {
-    hostname: 'https://coolnavi.vercel.app/',
+    hostname: domain,
     gzip: true,
   },
 
   amp: {
-    origin: 'https://coolnavi.vercel.app/',
+    origin: domain,
   },
 
   robots: {},
@@ -74,11 +76,14 @@ export default {
       name: 'クールナビ',
       lang: 'ja',
       theme_color: '#bad6c9',
+      twitterCard: 'summary_large_image',
+      ogHost: domain,
     },
     manifest: {
       name: 'クールナビ',
       short_name: 'クールナビ',
       lang: 'ja',
+      useWebmanifestExtension: true,
     },
   },
 
@@ -93,26 +98,36 @@ export default {
     },
   },
 
+  render: {
+    // csp: {
+    //   hashAlgorithm: 'sha256',
+    //   addMeta: true,
+    // },
+  },
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // // https://go.nuxtjs.dev/axios
     // '@nuxtjs/axios',
+    // https://color-mode.nuxtjs.org/
+    '@nuxtjs/color-mode',
   ],
 
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
-  },
+  // // Axios module configuration: https://go.nuxtjs.dev/config-axios
+  // axios: {
+  //   // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
+  //   baseURL: '/',
+  // },
 
+  // https://color-mode.nuxtjs.org/
   colorMode: {
     preference: 'system', // default value of $colorMode.preference
-    fallback: 'light', // fallback value if not system preference found
+    fallback: 'dark', // fallback value if not system preference found
     hid: 'nuxt-color-mode-script',
     globalName: '__NUXT_COLOR_MODE__',
-    // componentName: 'ColorScheme',
-    // classPrefix: '',
-    // classSuffix: '-mode',
+    componentName: 'ColorScheme',
+    classPrefix: '',
+    classSuffix: '-mode',
     storageKey: 'nuxt-color-mode',
   },
 
@@ -131,14 +146,27 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
         },
+        light: {
+          primary: colors.blue.lighten2,
+          accent: colors.grey.lighten3,
+          secondary: colors.amber.lighten3,
+          error: colors.red.accent3,
+          info: colors.teal.darken1,
+          warning: colors.amber.base,
+          success: colors.green.accent3,
+        },
       },
     },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    vendor: ['vue2-google-maps'],
     transpile: [/^vue2-google-maps($|\/)/],
+    extend(config, ctx) {
+      config.devtool = 'source-map'
+    },
   },
   serverMiddleware: ['~~/api/'],
 }
+
+export default config;
