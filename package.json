@@ -1,5 +1,6 @@
 {
   "name": "coolnavi",
+  "description": "クールシェアスポットを探し、削減できた消費電力量を可視化します。",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
     "@mdi/js": "^7.0.96",
+    "@nuxtjs/amp": "^0.5.4",
     "@nuxtjs/color-mode": "^3.1.4",
     "@nuxtjs/eslint-config": "^8.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",

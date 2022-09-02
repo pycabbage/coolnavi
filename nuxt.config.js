@@ -47,6 +47,8 @@ export default {
     '@nuxtjs/robots',
     // https://pwa.nuxtjs.org/
     '@nuxtjs/pwa',
+    // https://github.com/nuxt-community/amp-module
+    '@nuxtjs/amp',
     // https://github.com/nuxt-community/onesignal-module
     '@nuxtjs/onesignal',
     // https://go.nuxtjs.dev/vuetify
@@ -57,7 +59,11 @@ export default {
 
   sitemap: {
     hostname: 'https://coolnavi.vercel.app/',
-    gzip: true
+    gzip: true,
+  },
+
+  amp: {
+    origin: 'https://coolnavi.vercel.app/',
   },
 
   robots: {},
@@ -67,9 +73,11 @@ export default {
     meta: {
       name: 'クールナビ',
       lang: 'ja',
+      theme_color: '#bad6c9',
     },
     manifest: {
       name: 'クールナビ',
+      short_name: 'クールナビ',
       lang: 'ja',
     },
   },
@@ -87,8 +95,8 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
+    // // https://go.nuxtjs.dev/axios
+    // '@nuxtjs/axios',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
