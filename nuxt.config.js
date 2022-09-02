@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -14,7 +14,12 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content:
+          'クールシェアスポットを探し、削減できた消費電力量を可視化します。',
+      },
       { name: 'format-detection', content: 'telephone=no' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
@@ -29,10 +34,17 @@ export default {
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
+  // Change default nuxt ssr value: https://nuxtjs.org/docs/configuration-glossary/configuration-ssr
+  ssr: true,
+
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // // https://go.nuxtjs.dev/eslint
     // '@nuxtjs/eslint-module',
+    // https://sitemap.nuxtjs.org/
+    '@nuxtjs/sitemap',
+    // https://github.com/nuxt-community/robots-module
+    '@nuxtjs/robots',
     // https://pwa.nuxtjs.org/
     '@nuxtjs/pwa',
     // https://github.com/nuxt-community/onesignal-module
@@ -42,7 +54,9 @@ export default {
     // https://color-mode.nuxtjs.org/
     '@nuxtjs/color-mode',
   ],
+
   pwa: {
+    icon: {},
     meta: {
       name: 'クールナビ',
       lang: 'ja',
@@ -52,6 +66,7 @@ export default {
       lang: 'ja',
     },
   },
+
   oneSignal: {
     cdn: true,
     init: {

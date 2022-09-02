@@ -1,5 +1,5 @@
 {
-  "name": "opendata",
+  "name": "coolnavi",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -35,6 +35,8 @@
     "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/onesignal": "^3.0.0-beta.16",
     "@nuxtjs/pwa": "^3.3.5",
+    "@nuxtjs/robots": "^2.5.0",
+    "@nuxtjs/sitemap": "^2.4.0",
     "@nuxtjs/vuetify": "^1.12.3",
     "@types/node": "^18.7.13",
     "cross-env": "^7.0.3",
