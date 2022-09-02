@@ -1,28 +1,31 @@
 <template>
-  <div style="margin-top: 50px">
-    <div style="text-align: center; margin-left: auto; margin-right: auto">
-      <h4>今月削減した電力消費量は、</h4>
-      <h3>{{ elect.elect }} kWh</h3>
-    </div>
-    <div style="text-align: center; margin-left: auto; margin-right: auto">
-      <h4>累計クールシェア時間は、</h4>
-      <h3>{{ elect.time / 60 }} 時間</h3>
-    </div>
-    <div style="text-align: center; margin-left: auto; margin-right: auto">
-      <h4>節約した電気代は、</h4>
-      <h3>{{ elect.money }} 円</h3>
-    </div>
-    <div style="text-align: center; margin-left: auto; margin-right: auto">
-      <h4>です。</h4>
-    </div>
+  <div>
+    <v-card class="d-flex flex-column pa-6 ma-2" flat>
+      <p class="mx-lg-auto mb-auto text-h6">今月削減した電力消費量は、</p>
+      <p class="mx-lg-auto mb-auto text-h4">{{ elect.elect }} kWh</p>
+      <p class="mx-lg-auto mb-auto text-h6">累計クールシェア時間は、</p>
+      <p class="mx-lg-auto mb-auto text-h4">
+        {{ (elect.time / 60).toFixed(2) }} 時間
+      </p>
+      <p class="mx-lg-auto mb-auto text-h6">節約した電気代は、</p>
+      <p class="mx-lg-auto mb-auto text-h4">{{ elect.money.toFixed() }} 円</p>
+      <p class="mx-lg-auto mb-auto text-h6">です。</p>
+      <elect-graphic class="mx-lg-auto mb-auto" :elect="electG" />
+    </v-card>
   </div>
 </template>
 
 <script>
+import ElectGraphic from '~/components/ElectGraphic.vue'
+
 export default {
   name: 'ElectPage',
+  components: {
+    ElectGraphic,
+  },
   data() {
     return {
+      electG: 0.6,
       elect: {
         time: 37264, // 単位:分
         elect: 0,
@@ -33,6 +36,7 @@ export default {
   // eslint-disable-next-line require-await
   async mounted() {
     this.updateByTime()
+    this.electG = this.elect.elect / 100000
   },
   methods: {
     updateByTime() {
