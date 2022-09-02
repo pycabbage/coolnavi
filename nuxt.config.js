@@ -31,13 +31,33 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/eslint
+    // // https://go.nuxtjs.dev/eslint
     // '@nuxtjs/eslint-module',
+    // https://pwa.nuxtjs.org/
+    '@nuxtjs/pwa',
+    // https://github.com/nuxt-community/onesignal-module
+    '@nuxtjs/onesignal',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     // https://color-mode.nuxtjs.org/
     '@nuxtjs/color-mode',
   ],
+  pwa: {
+    manifest: {
+      name: 'クールナビ',
+      lang: 'ja',
+    },
+  },
+  oneSignal: {
+    cdn: true,
+    init: {
+      appId: '924b626d-12b1-4199-ad0a-03ad20929d65',
+      allowLocalhostAsSecureOrigin: true,
+      welcomeNotification: {
+        disable: false,
+      },
+    },
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
