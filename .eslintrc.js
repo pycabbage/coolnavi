@@ -21,5 +21,6 @@ module.exports = {
         ignorePattern: '^_',
       },
     ],
+    'vue/multi-word-component-names': "off"
   },
 }

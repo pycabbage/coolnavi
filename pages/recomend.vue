@@ -1,10 +1,4 @@
 <template>
-  <!-- <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center"> aaaaa</v-card>
-    </v-col>
-  </v-row>
-  -->
   <v-card class="mx-auto" max-width="300" tile>
     <v-list dense>
       <v-subheader>{{ nearDistance }}km圏内の図書館</v-subheader>
@@ -45,7 +39,7 @@ export default {
   async mounted () {
     // @ts-ignore
     const fTosho = await this.getNearLib()
-    this.items = fTosho.map((d) => {
+    this.items = fTosho.map((/** @type {{ tosho: { [x: string]: string | number | boolean; }; distanceText: any; }} */ d) => {
       return {
         icon: 'mdi-domain',
         text: d.tosho['施設名'],
@@ -122,10 +116,11 @@ export default {
           if (dis <= this.nearDistance) {
             return {
               tosho: d,
+              /** @type {number} */
               distance: dis,
               distanceText: `${dis.toFixed(2)}km`,
             }
-          } else {}
+          }
         })
         .filter((v) => v)
       return fTosho
